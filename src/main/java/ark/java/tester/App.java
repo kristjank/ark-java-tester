@@ -5,12 +5,10 @@ package ark.java.tester;
 
 import com.google.gson.internal.LinkedTreeMap;
 import org.arkecosystem.client.Connection;
-import org.arkecosystem.client.api.two.Two;
 import org.arkecosystem.crypto.configuration.Network;
 import org.arkecosystem.crypto.networks.Devnet;
 import org.arkecosystem.crypto.transactions.Transaction;
 import org.arkecosystem.crypto.transactions.builder.Transfer;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class App {
         Transaction actual = new Transfer()
                 .recipient(recipientAddress)
                 .amount(amount)
-                .vendorField("Java1 \uD83D\uDD31 \uD83C\uDF7A")
+                .vendorField("Java \uD83D\uDD31 \uD83C\uDF7A")
                 .sign(passphrase1)
                 .transaction;
 
@@ -32,39 +30,34 @@ public class App {
         Network.set(new Devnet());
         HashMap<String, Object> map = new HashMap<>();
         // map.put("host", "http://IP:4003/api/"); // network settings are autoc-configured from the node
-        map.put("host", "http://192.168.1.6:4003/api/");
-        map.put("API-Version", 2);
+        map.put("host", "https://dexplorer.ark.io:8443/api/");
         map.put("content-type","application/json");
 
-        Connection<Two> connection2 = new Connection(map);
+        Connection connection2 = new Connection(map);
 
         // testing blocks endpoint // find block with height 545774
         // LinkedTreeMap<String, Object> actual = connection2.api().peers.all();
         // System.out.println(actual);
 
-
-
-        // creating a transaction
-        Transaction transfer1 = CreateDemoTransaction(1, "DQUjMT6fhJWbwhaYL5pPdX9v5qPiRcAzRb", "pass");
-        System.out.println(transfer1.toJson());
-
-        // creating a transaction
-        Transaction transfer2 = CreateDemoTransaction(2, "DQUjMT6fhJWbwhaYL5pPdX9v5qPiRcAzRb", "pass");
-        System.out.println(transfer2.toJson());
-
-        // creating a transaction
-        Transaction transfer3 = CreateDemoTransaction(3, "DQUjMT6fhJWbwhaYL5pPdX9v5qPiRcAzRb", "pass");
-        System.out.println(transfer3.toJson());
-
         // adding transaction to payload, payload is an array of transactions
         ArrayList<HashMap> payload = new ArrayList<>();
-        payload.add(transfer1.toHashMap());
-        payload.add(transfer2.toHashMap());
-        payload.add(transfer3.toHashMap());
 
-        // posting transactions to the connected node as specified in the connection above
-        LinkedTreeMap<String, Object> postResponse = connection2.api().transactions.create(payload);
+        int x =  0;
+        while (x < 1000) {
+            for(int i = 1; i <= 40; i++) {
+                // creating a transaction
+                Transaction transfer1 = CreateDemoTransaction(i*x, "DQUjMT6fhJWbwhaYL5pPdX9v5qPiRcAzRb", "awesome deposit patient flush crystal choose tired security net section twin oblige");
+                payload.add(transfer1.toHashMap());
+                System.out.println(transfer1.toJson());
+                
 
-        System.out.println(postResponse);
+            }
+
+            // posting transactions to the connected node as specified in the connection above
+            LinkedTreeMap<String, Object> postResponse = connection2.api().transactions.create(payload);
+            payload.clear();
+            System.out.println(postResponse);
+            x++;
+        }
     }   
 }
